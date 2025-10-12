@@ -1,6 +1,6 @@
 # Requires -Version 7.0
 function Find-WmiUsage {
-<#
+    <#
 .SYNOPSIS
 # Scans PowerShell files for legacy WMI / WMIC usage.
 
@@ -22,18 +22,22 @@ function Find-WmiUsage {
 .PARAMETER ThrottleLimit
   Controls parallel job concurrency.
 
+.PARAMETER ExcludeFiles
+  File names to exclude from scanning (default: Find-WmiUsage.ps1, Find-WmiUsage.Tests.ps1).
+
 .EXAMPLE
   Find-WmiUsage -Path C:\Scripts -Output CSV -OutFile .\WmiScan.csv
 #>
     [CmdletBinding()]
     param(
         [string]$Path = '.',
-        [ValidateSet('Table','CSV','JSON')]
+        [ValidateSet('Table', 'CSV', 'JSON')]
         [string]$Output = 'Table',
         [string]$OutFile,
-        [string[]]$Extensions = @('*.ps1','*.psm1','*.psd1'),
+        [string[]]$Extensions = @('*.ps1', '*.psm1', '*.psd1'),
         [switch]$IgnoreComments,
-        [int]$ThrottleLimit = 20
+        [int]$ThrottleLimit = 20,
+        [string[]]$ExcludeFiles = @('Find-WmiUsage.ps1', 'Find-WmiUsage.Tests.ps1')
     )
 
     # Regex patterns to detect WMI / WMIC usage
@@ -60,7 +64,13 @@ function Find-WmiUsage {
         Get-ChildItem -Path $Path -Recurse -Filter $ext -ErrorAction SilentlyContinue
     }
 
+    # Filter out excluded files
+    if ($ExcludeFiles) {
+        $Files = $Files | Where-Object { $_.Name -notin $ExcludeFiles }
+    }
+
     if (-not $Files) {
+        if ($Path -eq '.') { $Path = (Get-Location).Path }
         Write-Warning "No PowerShell files found in $Path"
         return
     }

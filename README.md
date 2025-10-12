@@ -109,6 +109,21 @@ Control how many files are processed concurrently (default: 20):
 Find-WmiUsage -Path C:\LargeRepo -ThrottleLimit 50
 ```
 
+### Exclude Specific Files
+
+By default, the tool excludes itself (`Find-WmiUsage.ps1`) and its test file (`Find-WmiUsage.Tests.ps1`) from scans to avoid false positives from pattern definitions. You can customize this:
+
+```powershell
+# Use default exclusions (Find-WmiUsage.ps1 and Find-WmiUsage.Tests.ps1)
+Find-WmiUsage
+
+# Exclude additional files
+Find-WmiUsage -ExcludeFiles 'Find-WmiUsage.ps1','Find-WmiUsage.Tests.ps1','MyLegacyScript.ps1'
+
+# Scan everything (no exclusions)
+Find-WmiUsage -ExcludeFiles @()
+```
+
 ## Example Output
 
 ```
@@ -192,6 +207,7 @@ Get-CimInstance -ClassName Win32_Process -Filter "Name='notepad.exe'" | Remove-C
 | `-Extensions` | String[] | `*.ps1`, `*.psm1`, `*.psd1` | File extensions to scan |
 | `-IgnoreComments` | Switch | `$false` | Skip commented and empty lines |
 | `-ThrottleLimit` | Int | `20` | Number of files to process in parallel |
+| `-ExcludeFiles` | String[] | `Find-WmiUsage.ps1`, `Find-WmiUsage.Tests.ps1` | File names to exclude from scanning |
 
 ## Running Tests
 
