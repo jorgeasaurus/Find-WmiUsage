@@ -49,6 +49,8 @@ Find-WmiUsage scans for 15 different legacy WMI patterns:
 2. Source the function in your PowerShell session:
 
 ```powershell
+git clone https://github.com/jorgeasaurus/Find-WmiUsage.git
+cd Find-WmiUsage
 . .\Find-WmiUsage.ps1
 ```
 
