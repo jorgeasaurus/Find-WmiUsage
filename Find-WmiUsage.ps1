@@ -41,7 +41,7 @@ function Find-WmiUsage {
         [switch]$IgnoreComments,
         [int]$ThrottleLimit = 20,
         [string[]]$ExcludeFiles = @('Find-WmiUsage.ps1', 'Find-WmiUsage.Tests.ps1'),
-        [switch]$Recurse = $true
+        [switch]$Recurse
     )
 
     # Regex patterns to detect WMI / WMIC usage
@@ -65,7 +65,7 @@ function Find-WmiUsage {
 
     # Gather files
     $Files = foreach ($ext in $Extensions) {
-        if ($Recurse) {
+        if ($Recurse -or (-not $PSBoundParameters.ContainsKey('Recurse'))) {
             Get-ChildItem -Path $Path -Recurse -Filter $ext -ErrorAction SilentlyContinue
         } else {
             Get-ChildItem -Path $Path -Filter $ext -ErrorAction SilentlyContinue
