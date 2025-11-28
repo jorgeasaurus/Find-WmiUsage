@@ -30,6 +30,9 @@ function Find-WmiUsage {
 
 .EXAMPLE
   Find-WmiUsage -Path C:\Scripts -Output CSV -OutFile .\WmiScan.csv
+
+.EXAMPLE
+  Find-WmiUsage -Path X:\Scripts -Output Json -OutFile .\WmiScan.json -Recurse
 #>
     [CmdletBinding()]
     param(

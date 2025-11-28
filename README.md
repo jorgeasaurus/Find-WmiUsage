@@ -56,6 +56,8 @@ cd Find-WmiUsage
 
 ## Usage
 
+The scanner searches directories **recursively by default**. To limit scanning to only the specified folder, pass `-Recurse:$false`.
+
 ### Basic Scan
 
 Scan the current directory for WMI usage:
@@ -68,6 +70,16 @@ Find-WmiUsage
 
 ```powershell
 Find-WmiUsage -Path C:\Scripts
+```
+
+### Scan a Mapped Drive (e.g., Z:)
+
+```powershell
+# Mapped drive letter
+Find-WmiUsage -Path Z:\
+
+# UNC path to a share (no mapped drive needed)
+Find-WmiUsage -Path '\\fileserver\share'
 ```
 
 ### Export Results to CSV
