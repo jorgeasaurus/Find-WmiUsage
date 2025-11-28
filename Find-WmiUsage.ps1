@@ -25,8 +25,14 @@ function Find-WmiUsage {
 .PARAMETER ExcludeFiles
   File names to exclude from scanning (default: Find-WmiUsage.ps1, Find-WmiUsage.Tests.ps1).
 
+.PARAMETER Recurse
+  Scan subdirectories recursively (default: true).
+
 .EXAMPLE
   Find-WmiUsage -Path C:\Scripts -Output CSV -OutFile .\WmiScan.csv
+
+.EXAMPLE
+  Find-WmiUsage -Path X:\Scripts -Output Json -OutFile .\WmiScan.json -Recurse
 #>
     [CmdletBinding()]
     param(
@@ -37,7 +43,8 @@ function Find-WmiUsage {
         [string[]]$Extensions = @('*.ps1', '*.psm1', '*.psd1'),
         [switch]$IgnoreComments,
         [int]$ThrottleLimit = 20,
-        [string[]]$ExcludeFiles = @('Find-WmiUsage.ps1', 'Find-WmiUsage.Tests.ps1')
+        [string[]]$ExcludeFiles = @('Find-WmiUsage.ps1', 'Find-WmiUsage.Tests.ps1'),
+        [switch]$Recurse
     )
 
     # Regex patterns to detect WMI / WMIC usage
@@ -61,7 +68,11 @@ function Find-WmiUsage {
 
     # Gather files
     $Files = foreach ($ext in $Extensions) {
-        Get-ChildItem -Path $Path -Recurse -Filter $ext -ErrorAction SilentlyContinue
+        if ($Recurse -or (-not $PSBoundParameters.ContainsKey('Recurse'))) {
+            Get-ChildItem -Path $Path -Recurse -Filter $ext -ErrorAction SilentlyContinue
+        } else {
+            Get-ChildItem -Path $Path -Filter $ext -ErrorAction SilentlyContinue
+        }
     }
 
     # Filter out excluded files

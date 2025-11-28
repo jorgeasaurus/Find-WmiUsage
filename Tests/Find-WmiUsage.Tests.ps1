@@ -372,6 +372,24 @@ Get-WmiObject -Class Win32_Process
             Remove-Item $testFile1, $testFile2 -Force
             Remove-Item $subDir -Recurse -Force
         }
+
+        It 'Does not scan subdirectories when Recurse is false' {
+            $subDir = Join-Path $script:TestRoot 'SubFolder'
+            New-Item -ItemType Directory -Path $subDir -Force | Out-Null
+
+            $testFile1 = Join-Path $script:TestRoot 'root.ps1'
+            $testFile2 = Join-Path $subDir 'nested.ps1'
+
+            'Get-WmiObject Win32_Process' | Set-Content -Path $testFile1
+            'Invoke-WmiMethod -Name Create' | Set-Content -Path $testFile2
+
+            $result = Find-WmiUsage -Path $script:TestRoot -Output Table -Recurse:$false
+            $result.Count | Should -Be 1
+            $result[0].File | Should -BeLike '*root.ps1'
+
+            Remove-Item $testFile1, $testFile2 -Force
+            Remove-Item $subDir -Recurse -Force
+        }
     }
 
     Context 'Edge Cases' {

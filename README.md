@@ -56,6 +56,8 @@ cd Find-WmiUsage
 
 ## Usage
 
+The scanner searches directories **recursively by default**. To limit scanning to only the specified folder, pass `-Recurse:$false`.
+
 ### Basic Scan
 
 Scan the current directory for WMI usage:
@@ -68,6 +70,16 @@ Find-WmiUsage
 
 ```powershell
 Find-WmiUsage -Path C:\Scripts
+```
+
+### Scan a Mapped Drive (e.g., Z:)
+
+```powershell
+# Mapped drive letter
+Find-WmiUsage -Path Z:\
+
+# UNC path to a share (no mapped drive needed)
+Find-WmiUsage -Path '\\fileserver\share'
 ```
 
 ### Export Results to CSV
@@ -122,6 +134,15 @@ Find-WmiUsage -ExcludeFiles 'Find-WmiUsage.ps1','Find-WmiUsage.Tests.ps1','MyLeg
 
 # Scan everything (no exclusions)
 Find-WmiUsage -ExcludeFiles @()
+```
+
+### Scan Only Root Directory (No Subdirectories)
+
+By default, the tool scans all subdirectories recursively. To scan only the root directory:
+
+```powershell
+# Scan only the specified directory (no subdirectory recursion)
+Find-WmiUsage -Path C:\Scripts -Recurse:$false
 ```
 
 ## Example Output
@@ -201,13 +222,14 @@ Get-CimInstance -ClassName Win32_Process -Filter "Name='notepad.exe'" | Remove-C
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `-Path` | String | `.` (current directory) | Root directory to scan recursively |
+| `-Path` | String | `.` (current directory) | Root directory to scan |
 | `-Output` | String | `Table` | Output format: `Table`, `CSV`, or `JSON` |
 | `-OutFile` | String | Auto-generated | File path for CSV/JSON output |
 | `-Extensions` | String[] | `*.ps1`, `*.psm1`, `*.psd1` | File extensions to scan |
 | `-IgnoreComments` | Switch | `$false` | Skip commented and empty lines |
 | `-ThrottleLimit` | Int | `20` | Number of files to process in parallel |
 | `-ExcludeFiles` | String[] | `Find-WmiUsage.ps1`, `Find-WmiUsage.Tests.ps1` | File names to exclude from scanning |
+| `-Recurse` | Switch | `$true` | Scan subdirectories recursively |
 
 ## Running Tests
 
