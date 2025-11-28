@@ -124,6 +124,15 @@ Find-WmiUsage -ExcludeFiles 'Find-WmiUsage.ps1','Find-WmiUsage.Tests.ps1','MyLeg
 Find-WmiUsage -ExcludeFiles @()
 ```
 
+### Scan Only Root Directory (No Subdirectories)
+
+By default, the tool scans all subdirectories recursively. To scan only the root directory:
+
+```powershell
+# Scan only the specified directory (no subdirectory recursion)
+Find-WmiUsage -Path C:\Scripts -Recurse:$false
+```
+
 ## Example Output
 
 ```
@@ -201,13 +210,14 @@ Get-CimInstance -ClassName Win32_Process -Filter "Name='notepad.exe'" | Remove-C
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `-Path` | String | `.` (current directory) | Root directory to scan recursively |
+| `-Path` | String | `.` (current directory) | Root directory to scan |
 | `-Output` | String | `Table` | Output format: `Table`, `CSV`, or `JSON` |
 | `-OutFile` | String | Auto-generated | File path for CSV/JSON output |
 | `-Extensions` | String[] | `*.ps1`, `*.psm1`, `*.psd1` | File extensions to scan |
 | `-IgnoreComments` | Switch | `$false` | Skip commented and empty lines |
 | `-ThrottleLimit` | Int | `20` | Number of files to process in parallel |
 | `-ExcludeFiles` | String[] | `Find-WmiUsage.ps1`, `Find-WmiUsage.Tests.ps1` | File names to exclude from scanning |
+| `-Recurse` | Switch | `$true` | Scan subdirectories recursively |
 
 ## Running Tests
 
